@@ -1,0 +1,24 @@
+{
+  "name": "peso",
+  "plural": "pesos",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "peso": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "fecha": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
