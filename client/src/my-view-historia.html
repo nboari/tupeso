@@ -89,8 +89,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-form id="formPeso">
         <form action="/foo" method="get">
           <paper-input id="peso" name="peso" label="Peso" value="" required></paper-input>
-          <paper-button class="indigo" raised on-click="submitForm">Submit</paper-button>
-          <paper-button class="indigo" raised on-click="resetForm">Reset</paper-button>
+          <paper-button class="indigo" raised on-click="submitForm">Enviar</paper-button>
+          <paper-button class="indigo" raised on-click="resetForm">Limpiar</paper-button>
         </form>
       </iron-form>
     </paper-dialog>
@@ -115,10 +115,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback();
       }
-      submitForm() {
-        console.log(this.$.peso.value);
+      submitForm() {     
         this.$.AjaxPost.body = {"peso": this.$.peso.value,"fecha": "2017-11-25T03:50:37.800Z"};
         this.$.AjaxPost.generateRequest();
+        this.$.AjaxGet.generateRequest();
+        this.$.papperDialog.close();
       }
       resetForm() {
         this.$.peso.value="";
