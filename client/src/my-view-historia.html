@@ -86,13 +86,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
     <paper-dialog id="papperDialog">
       <h2>Nuevo Pesaje</h2>
-      <iron-form id="form3">
+      <iron-form id="formPeso">
         <form action="/foo" method="get">
-          <paper-input name="peso" label="Peso" value="" required></paper-input>
-          <paper-button class="indigo" raised onclick="form3.submit()">Submit</paper-button>
-          <paper-button class="indigo" raised onclick="form3.reset()">Reset</paper-button>
+          <paper-input id="peso" name="peso" label="Peso" value="" required></paper-input>
+          <paper-button class="indigo" raised on-click="submitForm">Submit</paper-button>
+          <paper-button class="indigo" raised on-click="resetForm">Reset</paper-button>
         </form>
-        <div class="output"></div>
       </iron-form>
     </paper-dialog>
     <div>
@@ -103,16 +102,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class MyViewHistoria extends Polymer.Element {
       static get is() { return 'my-view-historia'; }
+      connectedCallback() {
+        super.connectedCallback();
+      }
+      submitForm() {
+        console.log(this.$.peso.value);
+      }
+      resetForm() {
+        this.$.peso.value="";
+      }
       openDialog() {
         this.$.papperDialog.open();
       }
     };
-    customElements.define(MyViewHistoria.is, MyViewHistoria);
-    form3.addEventListener('iron-form-presubmit', function(event) {
-      this.request.params['sidekick'] = 'Robin';
-    });
-    form3.addEventListener('iron-form-submit', function(event) {
-      this.querySelector('.output').innerHTML = JSON.stringify(event.detail);
-    });
+    customElements.define(MyViewHistoria.is, MyViewHistoria);   
   </script>
 </dom-module>
