@@ -77,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
     <div class="card">
       <h1>Lista de ultimos pesajes</h1>   
-      <iron-ajax url="http://0.0.0.0:3000/api/pesos" last-response="{{data}}" auto></iron-ajax>
+      <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" last-response="{{data}}" auto></iron-ajax>
       <iron-list items="[[data]]" as="item" scroll-target="document" scroll-offset="200">
         <template>
           <div class="item">[[item.fecha]] : [[item.peso]] kg</div>
@@ -97,19 +97,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div>
       <paper-fab id="fab" icon="add" on-click="openDialog"></paper-fab>
     </div>
+    <iron-ajax
+      id="AjaxPost"        
+      method="post"
+      url="http://0.0.0.0:3000/api/pesos"
+      handle-as="json"
+      content-type="application/json"
+      on-response="handleAjaxPostResponse"
+      on-error="handleAjaxPostError">
+    </iron-ajax>
   </template>
 
   <script>
     class MyViewHistoria extends Polymer.Element {
       static get is() { return 'my-view-historia'; }
+
       connectedCallback() {
         super.connectedCallback();
       }
       submitForm() {
         console.log(this.$.peso.value);
+        this.$.AjaxPost.body = {"peso": this.$.peso.value,"fecha": "2017-11-25T03:50:37.800Z"};
+        this.$.AjaxPost.generateRequest();
       }
       resetForm() {
         this.$.peso.value="";
+      }
+      handleAjaxPostResponse() {
+        console.log("reshandleAjaxPostResponse");
+      }
+      handleAjaxPostError() {
+        console.log("handleAjaxPostError");
       }
       openDialog() {
         this.$.papperDialog.open();
