@@ -18,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/promise-polyfill/promise-polyfill-lite.html">
+<!-- <link rel="import" href="../bower_components/promise-polyfill/promise-polyfill-lite.html"> -->
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view-historia">
@@ -28,29 +28,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
-
       google-chart {
         height: 300px;
         width: 400px;
         margin: 0;
       }
-
       paper-fab {
         position: fixed;
         right: 25px;
         bottom: 30px;
       }
-
       paper-fab {
         display: block;
         float: right;
       }
-
       .item {
         padding: 10px;
         /* border-bottom: 1px solid #ccc; */
       }
-
       paper-button {
         display: block;
         float: right;
@@ -58,7 +53,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 20px;
         margin-right: 0px;
       }
-
       paper-button.indigo {
         background-color: var(--paper-indigo-500);
         color: white;
@@ -67,12 +61,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           color: white !important;
         }
       }
-
       paper-button.indigo:hover {
         background-color: var(--paper-indigo-400);
       }
     </style>
-
     <div class="card">
       <h1>Evolucion del peso</h1>
       <google-chart type='line' options='{"title": "Evolucion del peso del ultimo año"}' cols='[{"label":"Month", "type":"string"}, {"label":"Dias", "type":"number"}]'
@@ -117,22 +109,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
           }
-
       connectedCallback() {
         super.connectedCallback();
         
       }
-
       static addPeso() {
         this.set('arrayPesoChart', [['2017-01-01', '90']])
      //   this.push('', peso);
       }
-
       removePeso(peso) {
         var index = this.users.indexOf(user);
         this.splice('users', index, 1);
       }
-
       submitForm() {
         this.$.AjaxPost.body = { "peso": this.$.peso.value, "fecha": "2017-11-25T03:50:37.800Z" };
         this.$.AjaxPost.generateRequest();
@@ -152,14 +140,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handleAjaxGetResponse(data) {
         console.log("reshandleAjaxGetResponse");   
         var response = data.detail.response;
-        console.log(response);   
-        this.set('arrayPesoChart', [['2017-01-01', 90],['2017-01-01', 90],['2017-01-02', 91],['2017-01-02', 91],['2017-01-02', 91],['2017-01-02', 91],['2017-01-02', 91],['2017-01-02', 91],['2017-01-02', 92],['2017-01-02', 93],['2017-01-02', 91],['2017-01-02', 92],['2017-01-02', 93]]);
-        this.set('arrayPesoFmt', response);
+        var arrayPesoChart = [];
         response.forEach(function (element) {
-          console.log("id: " + element.id);
-          console.log("peso: " + element.peso);
-          console.log("fecha: " + element.fecha);
+          arrayPesoChart.push([element.fecha,element.peso]);
         });
+        this.set('arrayPesoChart', arrayPesoChart);
+        this.set('arrayPesoFmt', response);
         //this.$.lista._render();
       }
       handleAjaxGetError() {
