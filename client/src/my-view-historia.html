@@ -28,24 +28,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
+
       google-chart {
         height: 300px;
-        width: 400px;
+        width: 800px;
         margin: 0;
       }
+
       paper-fab {
         position: fixed;
         right: 25px;
         bottom: 30px;
       }
+
       paper-fab {
         display: block;
         float: right;
       }
+
       .item {
         padding: 10px;
         /* border-bottom: 1px solid #ccc; */
       }
+
       paper-button {
         display: block;
         float: right;
@@ -53,6 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 20px;
         margin-right: 0px;
       }
+
       paper-button.indigo {
         background-color: var(--paper-indigo-500);
         color: white;
@@ -61,6 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           color: white !important;
         }
       }
+
       paper-button.indigo:hover {
         background-color: var(--paper-indigo-400);
       }
@@ -73,8 +80,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
     <div class="card">
       <h1>Lista de ultimos pesajes</h1>
-      <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse"
-        on-error="handleAjaxGetError" auto />
+      <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse" on-error="handleAjaxGetError"
+        auto />
       <iron-list id="lista" items="[[arrayPesoFmt]]" as="item" scroll-target="document" scroll-offset="200">
         <template>
           <div class="item">[[item.fecha]] : [[item.peso]] kg</div>
@@ -102,27 +109,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class MyViewHistoria extends Polymer.Element {
       static get is() { return 'my-view-historia'; }
       static get properties() {
-            return {
-              arrayPesoFmt: {
-                type: String,
-                value: []
-              }
-            }
+        return {
+          arrayPesoFmt: {
+            type: String,
+            value: []
           }
+        }
+      }
       connectedCallback() {
         super.connectedCallback();
-        
-      }
-      static addPeso() {
-        this.set('arrayPesoChart', [['2017-01-01', '90']])
-     //   this.push('', peso);
-      }
-      removePeso(peso) {
-        var index = this.users.indexOf(user);
-        this.splice('users', index, 1);
       }
       submitForm() {
-        this.$.AjaxPost.body = { "peso": this.$.peso.value, "fecha": "2017-11-25T03:50:37.800Z" };
+        this.$.AjaxPost.body = { "peso": this.$.peso.value, "fecha": Date() };
         this.$.AjaxPost.generateRequest();
         this.$.AjaxGet.generateRequest();
         this.$.papperDialog.close();
@@ -138,11 +136,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log("handleAjaxPostError");
       }
       handleAjaxGetResponse(data) {
-        console.log("reshandleAjaxGetResponse");   
+        console.log("reshandleAjaxGetResponse");
         var response = data.detail.response;
         var arrayPesoChart = [];
         response.forEach(function (element) {
-          arrayPesoChart.push([element.fecha,element.peso]);
+          var fechaFromateada = new Date(element.fecha).toLocaleString();
+          arrayPesoChart.push([fechaFromateada, element.peso]);
         });
         this.set('arrayPesoChart', arrayPesoChart);
         this.set('arrayPesoFmt', response);
