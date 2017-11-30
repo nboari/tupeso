@@ -18,7 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<!-- <link rel="import" href="../bower_components/promise-polyfill/promise-polyfill-lite.html"> -->
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view-historia">
@@ -48,7 +47,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .item {
         padding: 10px;
-        /* border-bottom: 1px solid #ccc; */
       }
 
       paper-button {
@@ -75,14 +73,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="card">
       <h1>Evolucion del peso</h1>
       <google-chart type='line' options='{"title": "Evolucion del peso del ultimo año"}' cols='[{"label":"Month", "type":"string"}, {"label":"Dias", "type":"number"}]'
-        rows=[[arrayPesoChart]]>
-      </google-chart>
+        rows=[[arrayPesoChart]]></google-chart>
     </div>
     <div class="card">
-      <h1>Lista de ultimos pesajes</h1>
-      <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse" on-error="handleAjaxGetError"
-        auto />
-      <iron-list id="lista" items="[[arrayPesoFmt]]" as="item" scroll-target="document" scroll-offset="200">
+      <h1>Lista de ultimos pesajes</h1>     
+      <iron-list id="lista" items="[]" as="item" scroll-target="document" scroll-offset="200">
         <template>
           <div class="item">[[item.fecha]] : [[item.peso]] kg</div>
         </template>
@@ -92,7 +87,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h2>Nuevo Pesaje</h2>
       <iron-form id="formPeso">
         <form action="/foo" method="get">
-          <paper-input autofocus id="peso" name="peso" label="Peso" value="" required></paper-input>
+          <paper-input autofocus id="peso" name="peso" label="Peso" value="" required ></paper-input>
           <paper-button class="indigo" raised on-click="submitForm">Enviar</paper-button>
           <paper-button class="indigo" raised on-click="resetForm">Limpiar</paper-button>
         </form>
@@ -101,8 +96,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div>
       <paper-fab id="fab" icon="add" on-click="openDialog"></paper-fab>
     </div>
+    <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse" on-error="handleAjaxGetError"
+    auto >
+    </iron-ajax>  
     <iron-ajax id="AjaxPost" method="post" url="http://0.0.0.0:3000/api/pesos" handle-as="json" content-type="application/json"
       on-response="handleAjaxPostResponse" on-error="handleAjaxPostError" />
+    </iron-ajax>  
   </template>
 
   <script>
@@ -110,9 +109,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get is() { return 'my-view-historia'; }
       static get properties() {
         return {
-          arrayPesoFmt: {
-            type: String,
-            value: []
+          arrayPesoChart: {
+            type: Array
           }
         }
       }
@@ -124,29 +122,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.AjaxPost.generateRequest();
         this.$.AjaxGet.generateRequest();
         this.$.papperDialog.close();
-        this.$.peso.value = "";
+        this.resetForm();
       }
       resetForm() {
         this.$.peso.value = "";
       }
       handleAjaxPostResponse(data) {
-        console.log(data);
         console.log("reshandleAjaxPostResponse");
       }
       handleAjaxPostError() {
         console.log("handleAjaxPostError");
       }
       handleAjaxGetResponse(data) {
-        console.log("reshandleAjaxGetResponse");
         var response = data.detail.response;
         var arrayPesoChart = [];
+        var arrayPesoList = [];
         response.forEach(function (element) {
           var fechaFromateada = new Date(element.fecha).toLocaleString();
           arrayPesoChart.push([fechaFromateada, element.peso]);
+          arrayPesoList.push({"id":element.id,"peso": element.peso, "fecha": fechaFromateada})
         });
         this.set('arrayPesoChart', arrayPesoChart);
-        this.set('arrayPesoFmt', response);
-        //this.$.lista._render();
+        this.$.lista.items = arrayPesoList;
       }
       handleAjaxGetError() {
         console.log("handleAjaxGetError");
