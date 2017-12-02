@@ -18,6 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view-historia">
@@ -25,13 +26,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
-        padding: 10px;
+        padding: 5px;
       }
 
       google-chart {
         height: 300px;
-        width: 800px;
-        margin: 0;
+        width: 100%;
       }
 
       paper-fab {
@@ -47,6 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .item {
         padding: 10px;
+        text-align: center;        
       }
 
       paper-button {
@@ -69,14 +70,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-button.indigo:hover {
         background-color: var(--paper-indigo-400);
       }
+
+      h1 {
+        text-align: center;        
+      }
     </style>
     <div class="card">
       <h1>Evolucion del peso</h1>
-      <google-chart type='line' options='{"title": "Evolucion del peso del ultimo año"}' cols='[{"label":"Month", "type":"string"}, {"label":"Dias", "type":"number"}]'
-        rows=[[arrayPesoChart]]></google-chart>
+      <google-chart id='googleChart' type='line' options='{"legend":"none"}' cols='[{"label":"Fecha", "type":"string"}, {"label":"Dias", "type":"number"}]'
+        rows=[[arrayPesoChart]]>
+      </google-chart>
     </div>
     <div class="card">
-      <h1>Lista de ultimos pesajes</h1>     
+      <h1>Lista de ultimos pesajes</h1>
       <iron-list id="lista" items="[]" as="item" scroll-target="document" scroll-offset="200">
         <template>
           <div class="item">[[item.fecha]] : [[item.peso]] kg</div>
@@ -87,7 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h2>Nuevo Pesaje</h2>
       <iron-form id="formPeso">
         <form action="/foo" method="get">
-          <paper-input autofocus id="peso" name="peso" label="Peso" value="" required ></paper-input>
+          <paper-input autofocus id="peso" name="peso" label="Peso" value="" required></paper-input>
           <paper-button class="indigo" raised on-click="submitForm">Enviar</paper-button>
           <paper-button class="indigo" raised on-click="resetForm">Limpiar</paper-button>
         </form>
@@ -96,16 +102,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div>
       <paper-fab id="fab" icon="add" on-click="openDialog"></paper-fab>
     </div>
-    <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse" on-error="handleAjaxGetError"
-    auto >
-    </iron-ajax>  
+    <iron-ajax id="AjaxGet" url="http://0.0.0.0:3000/api/pesos" on-response="handleAjaxGetResponse"
+      on-error="handleAjaxGetError" auto>
+    </iron-ajax>
+    <iron-ajax id="AjaxGetDesc" url="http://0.0.0.0:3000/api/pesos?filter=%7B%22order%22%3A%20%22fecha%20DESC%22%7D" on-response="handleAjaxGetDescResponse"
+      on-error="handleAjaxGetDescError" auto>
+    </iron-ajax>
     <iron-ajax id="AjaxPost" method="post" url="http://0.0.0.0:3000/api/pesos" handle-as="json" content-type="application/json"
       on-response="handleAjaxPostResponse" on-error="handleAjaxPostError" />
-    </iron-ajax>  
+    </iron-ajax>
+    <iron-resizable-behavior></iron-resizable-behavior>
   </template>
 
   <script>
-    class MyViewHistoria extends Polymer.Element {
+    class MyViewHistoria extends Polymer.mixinBehaviors(Polymer.IronResizableBehavior, Polymer.Element) {
       static get is() { return 'my-view-historia'; }
       static get properties() {
         return {
@@ -116,6 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       connectedCallback() {
         super.connectedCallback();
+        this.addEventListener('iron-resize', e => this.$.googleChart.redraw());
       }
       submitForm() {
         this.$.AjaxPost.body = { "peso": this.$.peso.value, "fecha": Date() };
@@ -136,17 +147,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handleAjaxGetResponse(data) {
         var response = data.detail.response;
         var arrayPesoChart = [];
-        var arrayPesoList = [];
         response.forEach(function (element) {
           var fechaFromateada = new Date(element.fecha).toLocaleString();
           arrayPesoChart.push([fechaFromateada, element.peso]);
-          arrayPesoList.push({"id":element.id,"peso": element.peso, "fecha": fechaFromateada})
         });
         this.set('arrayPesoChart', arrayPesoChart);
-        this.$.lista.items = arrayPesoList;
       }
       handleAjaxGetError() {
         console.log("handleAjaxGetError");
+      }
+      handleAjaxGetDescResponse(data) {
+        var response = data.detail.response;
+        var arrayPesoList = [];
+        response.forEach(function (element) {
+          var fechaFromateada = new Date(element.fecha).toLocaleString();
+          arrayPesoList.push({ "id": element.id, "peso": element.peso, "fecha": fechaFromateada })
+        });
+        this.$.lista.items = arrayPesoList;
+      }
+      handleAjaxGetDescError() {
+        console.log("handleAjaxGetDescError");
       }
       openDialog() {
         this.$.papperDialog.open();
