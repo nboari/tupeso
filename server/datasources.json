@@ -2,5 +2,16 @@
   "db": {
     "name": "db",
     "connector": "memory"
+  },
+  "mongodb": {
+    "host": "ds137206.mlab.com",
+    "port": 37206,
+    "url": "",
+    "database": "tupeso",
+    "password": "tupeso2018",
+    "name": "db",
+    "user": "tupeso",
+    "connector": "mongodb",
+    "allowExtendedOperators": true
   }
 }
