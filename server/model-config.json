@@ -39,7 +39,11 @@
     "dataSource": null
   },
   "peso": {
-    "dataSource": "db",
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "cliente": {
+    "dataSource": "mongodb",
     "public": true
   }
 }

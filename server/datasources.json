@@ -9,7 +9,7 @@
     "url": "",
     "database": "tupeso",
     "password": "tupeso2018",
-    "name": "db",
+    "name": "mongodb",
     "user": "tupeso",
     "connector": "mongodb",
     "allowExtendedOperators": true

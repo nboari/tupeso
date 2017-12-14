@@ -1,0 +1,31 @@
+{
+  "name": "cliente",
+  "plural": "clientes",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "edad": {
+      "type": "number",
+      "required": false,
+      "default": 0
+    },
+    "altura": {
+      "type": "number",
+      "required": false,
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {
+    "pesos": {
+      "type": "hasAndBelongsToMany",
+      "model": "peso",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
