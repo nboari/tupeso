@@ -1,24 +1,31 @@
 {
-  "name": "peso",
-  "plural": "pesos",
-  "base": "PersistedModel",
+  "name": "cliente",
+  "plural": "clientes",
+  "base": "User",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "peso": {
+    "edad": {
       "type": "number",
-      "required": true,
+      "required": false,
       "default": 0
     },
-    "fecha": {
-      "type": "date",
-      "required": true
+    "altura": {
+      "type": "number",
+      "required": false,
+      "default": 0
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "pesos": {
+      "type": "hasAndBelongsToMany",
+      "model": "peso",
+      "foreignKey": ""
+    }
+  },
   "acls": [
     {
       "accessType": "*",
