@@ -16,6 +16,11 @@
       "type": "number",
       "required": false,
       "default": 0
+    },
+    "sexo": {
+      "type": "boolean",
+      "required": false,
+      "default": 0
     }
   },
   "validations": [],
