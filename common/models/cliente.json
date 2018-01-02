@@ -7,8 +7,8 @@
     "validateUpsert": true
   },
   "properties": {
-    "edad": {
-      "type": "number",
+    "fnac": {
+      "type": "date",
       "required": false,
       "default": 0
     },
